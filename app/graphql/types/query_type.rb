@@ -18,5 +18,12 @@ module Types
     def post(id:)
       Post.find(id)
     end
+
+    field :comments, [Types::CommentType], null: false do
+      argument :post_id, Int, required: true
+    end
+    def comments(post_id:) # 投稿されたID
+      Comment.where(post_id: post_id) # 投稿されたIDを用いて探す
+    end
   end
 end
