@@ -13,7 +13,7 @@ module Types
     end
 
     field :post, Types::PostType, null: false do
-      argument :id, Int, required: false
+      argument :id, ID, required: false
     end
     def post(id:)
       Post.find(id)
