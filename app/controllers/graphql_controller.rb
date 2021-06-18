@@ -5,9 +5,18 @@ class GraphqlController < ApplicationController
   # protect_from_forgery with: :null_session
 
   def execute
-    variables = prepare_variables(params[:variables])
-    query = params[:query]
-    operation_name = params[:operationName]
+    if params[:operations].present?
+      operations = params.ensure_hash(params[:operations])
+      operation_name = operations['operationName']
+      files = ensure_hash(params[:map]).map { |k, _| params[k] }
+      parameter = { 'input' => operations['variables']['input'].merge({ 'images' => files }) }
+      variables = ActionController::Parameters.new(parameter)
+      query = operations['query']
+    else
+      variables = prepare_variables(params[:variables])
+      query = params[:query]
+      operation_name = params[:operationName]
+    end
     context = {
       # Query context goes here, for example:
       # current_user: current_user,
